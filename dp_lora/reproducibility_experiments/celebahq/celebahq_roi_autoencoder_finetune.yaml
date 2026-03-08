@@ -1,0 +1,72 @@
+model:
+  base_learning_rate: 5e-7
+  target: ldm.models.autoencoder.VQModelInterface
+  params:
+    ckpt_path: /home/scur0003/fact/extension/uva_fact_ai_group_5/dp_lora/logs/vqvae_pretrain/checkpoints/last.ckpt
+    monitor: val/rec_loss
+    embed_dim: 3
+    n_embed: 8192
+    lossconfig:
+      target: ldm.modules.losses.VQLPIPSWithDiscriminator
+      params:
+        codebook_weight: 1.0
+        n_classes: 8192
+
+    dp_config:
+      enabled: true
+      epsilon: 1
+      delta: 1.0e-05
+      max_grad_norm: 0.0005
+      poisson_sampling: true
+      max_batch_size: 8
+
+    ddconfig:
+      double_z: false
+      z_channels: 3
+      resolution: 256
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult:
+      - 1
+      - 2
+      - 4
+      num_res_blocks: 2
+      attn_resolutions: []
+      dropout: 0.0
+data:
+  target: main.DataModuleFromConfig
+  feature_path: https://drive.google.com/uc?id=1Xv7VNz8P6Znay08VaIWFWgmAoaeqs0oj
+  params:
+    batch_size: 32
+    num_workers: 6
+    wrap: false
+    train:
+      target: ldm.data.celebahq.CelebAHQ
+      params:
+        split: test
+        target_type: class
+        class_attrs:
+        - Male
+        size: 128
+    validation:
+      target: ldm.data.celebahq.CelebAHQ
+      params:
+        split: test
+        target_type: class
+        class_attrs:
+        - Male
+        size: 128
+
+lightning:
+  callbacks:
+    image_logger:
+      target: main.ImageLogger
+      params:
+        batch_frequency: 3000
+        max_images: 8
+        increase_log_steps: false
+  trainer:
+    benchmark: true
+    max_epochs: 10
+    accelerator: gpu

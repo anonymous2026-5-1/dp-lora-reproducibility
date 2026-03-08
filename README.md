@@ -121,14 +121,16 @@ Pre-training + fine-tuning (not used for sampling):
 
 ## Autoencoder Fine-Tuning with DP (No-DP, Global-DP, RoI-only DP)
 
-**Note that to run this code you will have to checkout the branch `ae-finetune`**
+**Note that to run this code you will have to checkout the branch `roi-only-dp and run the `setup_roi_env.sh` script which will set up the `ldm-roi` environment**
 ```bash
 git checkout -b roi-only-dp origin/roi-only-dp
+cd dp_lora 
+bash setup_roi_env.sh
 ```
 
 We provide instructions for fine-tuning an autoencoder on CelebA-HQ with three different privacy settings: non-private (No-DP), global differential privacy (Global-DP), and region-of-interest selective privacy (RoI-only DP).
 
-For global and no-dp settings the autoencoder training can be run, with the config `dp_lora/reproducibility_experiments/celebahq/celebahq_autoencoder_finetune.yaml` updated to have DP disabled/enabled and comment out the `feature_path` property.
+For global and no-dp settings the autoencoder training can be run, with the config `dp_lora/reproducibility_experiments/celebahq/celebahq_roi_autoencoder_finetune.yaml` updated to have DP disabled/enabled and comment out the `feature_path` property.
 
 ### Quick Start: RoI-only DP Fine-Tuning
 
@@ -143,15 +145,13 @@ RoI-only DP training automatically:
 - Generates binary masks for important parameters (~6% of total)
 - Applies selective DP: noise only on masked parameters
 
-To run this extension clone the opacus library from here https://github.com/Rakesh-123-cryp/opacus-privacy.git instead of using pip to install it.
-
 Run the following command to start training: 
 ```bash
 cd dp_lora
-python main.py --base ./reproducibility_experiments/celebahq/celebahq_autoencoder_finetune.yaml -t --gpus 0,
+python main.py --base ./reproducibility_experiments/celebahq/celebahq_roi_autoencoder_finetune.yaml -t --gpus 0,
 ```
 
-To validate our claim of Local-DP, we finetuned ResNet-9 network on a subset fo [CelebA](https://www.kaggle.com/datasets/ashishjangra27/gender-detection-20k-images-celeb) for the Gender Classification task. The results can be found in the notebook `dp_lora/classification.ipynb`. We can observe ~2% improvement over the global-DP approach and this trend will either persist or may results in greater gains when trained on more complex and bigger architectures. Being an unexplored application of DP, this approach proves to be a good path of research.
+To validate our claim of Local-DP, we finetuned ResNet-9 network on a subset fo [CelebA](https://www.kaggle.com/datasets/ashishjangra27/gender-detection-20k-images-celeb) for the Gender Classification task. The results can be found in the notebook `dp_lora/RoI-Only DP Classification.ipynb`. We can observe ~2% improvement over the global-DP approach and this trend will either persist or may results in greater gains when trained on more complex and bigger architectures. Being an unexplored application of DP, this approach proves to be a good path of research.
 
 ## Adding a New Experiment
 

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+echo ""
+echo "Installing environment from environment-roi-only.yaml..."
+conda env create -f environment-roi-only.yaml
+
+echo ""
+echo "Activating environment"
+eval "$(conda shell.bash hook)"
+conda activate ldm-roi
+
+echo ""
+cd ./src/autodp
+
+echo "Installing autodp..."
+pip install -e .
+
+echo "Installing taming-transformers..."
+cd ../taming-transformers
+pip install -e .
+
+echo "Installing Opacus for ROI" 
+cd "../opacus"
+pip install -e .
