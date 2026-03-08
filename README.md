@@ -121,7 +121,7 @@ Pre-training + fine-tuning (not used for sampling):
 
 ## Autoencoder Fine-Tuning with DP (No-DP, Global-DP, RoI-only DP)
 
-**Note that to run this code you will have to checkout the branch `roi-only-dp and run the `setup_roi_env.sh` script which will set up the `ldm-roi` environment**
+**Note that to run this code you will have to checkout the branch `roi-only-dp` and run the `setup_roi_env.sh` script which will set up the `ldm-roi` environment**
 ```bash
 git checkout -b roi-only-dp origin/roi-only-dp
 cd dp_lora 
